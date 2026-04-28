@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Temportal — 一瞬で繋がる、跡を残さない。ワンタイム・ボイスチャット。" />
+    <title>Temportal — ワンタイム・ボイスチャット</title>
+    <link rel="icon" type="image/png" href="icon.png" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <meta property="og:title" content="Temportal — ワンタイム・ボイスチャット" />
+    <meta property="og:description" content="一瞬で繋がる、跡を残さない。ワンタイム・ボイスチャット。" />
+    <meta property="og:image" content="icon.png" />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0F172A;
+            --surface-alt: #1E293B;
+            --border: rgba(99, 102, 241, 0.18);
+            --text: #E2E8F0;
+            --text-muted: #94A3B8;
+            --text-faint: #64748B;
+            --indigo: #6366F1;
+            --purple: #9333EA;
+            --pink: #EC4899;
+            --success: #4ADE80;
+            --gradient: linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(147, 51, 234, 0.18) 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-decor {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.45;
+            animation: float 18s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: #6366F1;
+            top: -150px;
+            left: -150px;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: #9333EA;
+            top: 30%;
+            right: -200px;
+            animation-delay: -6s;
+        }
+
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+            background: #EC4899;
+            bottom: -150px;
+            left: 30%;
+            animation-delay: -12s;
+            opacity: 0.25;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(60px, -40px) scale(1.08);
+            }
+
+            66% {
+                transform: translate(-40px, 50px) scale(0.95);
+            }
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            background: rgba(2, 6, 23, 0.6);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .hero-logo {
+            width: clamp(96px, 14vw, 140px);
+            height: clamp(96px, 14vw, 140px);
+            border-radius: 28px;
+            display: block;
+            margin: 0 auto 28px;
+            box-shadow:
+                0 0 0 1px rgba(99, 102, 241, 0.25),
+                0 20px 50px rgba(99, 102, 241, 0.4),
+                0 40px 90px rgba(147, 51, 234, 0.25);
+            animation: logoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            padding: 9px 18px;
+            background: var(--gradient);
+            color: #fff !important;
+            border-radius: 999px;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55);
+        }
+
+        .hero {
+            min-height: 100vh;
+            padding: 140px 24px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--gradient-soft);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            max-width: 900px;
+            margin-bottom: 24px;
+        }
+
+        .hero-grad {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 640px;
+            margin-bottom: 44px;
+            font-weight: 400;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 80px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.98rem;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(147, 51, 234, 0.5);
+        }
+
+        .btn-ghost {
+            background: rgba(30, 41, 59, 0.6);
+            color: var(--text);
+            border: 1px solid var(--border);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .device-stage {
+            position: relative;
+            width: min(360px, 90vw);
+            margin: 0 auto;
+            perspective: 1500px;
+        }
+
+        .device {
+            position: relative;
+            aspect-ratio: 9 / 19.5;
+            background: linear-gradient(160deg, #1e293b, #0f172a);
+            border-radius: 44px;
+            padding: 12px;
+            box-shadow:
+                0 0 0 2px rgba(99, 102, 241, 0.15),
+                0 30px 80px rgba(99, 102, 241, 0.25),
+                0 60px 120px rgba(0, 0, 0, 0.6);
+            transform: rotateY(-8deg) rotateX(4deg);
+            transition: transform 0.6s ease;
+        }
+
+        .device:hover {
+            transform: rotateY(0deg) rotateX(0deg);
+        }
+
+        .device::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 26px;
+            background: #000;
+            border-radius: 999px;
+            z-index: 5;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            border-radius: 34px;
+            overflow: hidden;
+            position: relative;
+            padding: 56px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .screen-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .screen-room {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .voice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .vc-tile {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .vc-tile.speaking {
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+        }
+
+        .vc-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        .vc-name {
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        .vc-bars {
+            display: flex;
+            gap: 2px;
+            height: 10px;
+            align-items: end;
+        }
+
+        .vc-bars span {
+            width: 3px;
+            background: var(--indigo);
+            border-radius: 2px;
+            animation: bars 1s ease-in-out infinite;
+        }
+
+        .vc-bars span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .vc-bars span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .vc-bars span:nth-child(4) {
+            animation-delay: 0.45s;
+        }
+
+        @keyframes bars {
+
+            0%,
+            100% {
+                height: 30%;
+            }
+
+            50% {
+                height: 100%;
+            }
+        }
+
+        .mic-bar {
+            margin-top: auto;
+            background: var(--gradient);
+            border-radius: 999px;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .mic-icon {
+            width: 22px;
+            height: 22px;
+            color: #fff;
+        }
+
+        section {
+            padding: 100px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-eyebrow {
+            text-align: center;
+            color: var(--indigo);
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .section-lead {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 620px;
+            margin: 0 auto 64px;
+            font-size: 1.05rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s, background 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-soft);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .feature:hover::before {
+            opacity: 1;
+        }
+
+        .feature>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: #fff;
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+            counter-reset: step;
+        }
+
+        .step {
+            text-align: center;
+            counter-increment: step;
+        }
+
+        .step-num {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 20px;
+            background: var(--gradient-soft);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .step-num::before {
+            content: counter(step, decimal-leading-zero);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .platforms-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(147, 51, 234, 0.12) 100%);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 60px 40px;
+            text-align: center;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .platform-list {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .platform {
+            padding: 10px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--text-faint);
+            font-size: 0.88rem;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            color: var(--text);
+        }
+
+        footer .footer-links {
+            margin-top: 10px;
+        }
+
+        .platforms-cta {
+            margin-top: 36px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 720px) {
+            nav {
+                padding: 16px 20px;
+            }
+
+            .nav-links a:not(.nav-cta) {
+                display: none;
+            }
+
+            .hero {
+                padding: 110px 20px 60px;
+            }
+
+            section {
+                padding: 70px 20px;
+            }
+
+            .platforms-card {
+                padding: 40px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-decor">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav>
+        <a class="brand" href="#top">
+            <img class="brand-mark" src="icon.png" alt="Temportal" />
+            <span>Temportal</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features">特徴</a>
+            <a href="#how">使い方</a>
+            <a href="#platforms">対応端末</a>
+            <a href="download.html" class="nav-cta">ダウンロード</a>
+        </div>
+    </nav>
+
+    <header class="hero" id="top">
+        <img class="hero-logo" src="icon.png" alt="Temportal" />
+        <span class="badge"><span class="badge-dot"></span>ワンタイム・ボイスチャット</span>
+        <h1>一瞬で繋がる、<br><span class="hero-grad">跡を残さない</span>会話。</h1>
+        <p class="hero-sub">
+            Temportalは、ルームを開くだけで友達と即座に話せる、軽量ボイスチャットアプリ。<br>
+            通話が終われば、すべてが消える。だからこそ、自由に話せる。
+        </p>
+        <div class="cta-row">
+            <a href="download.html" class="btn btn-primary">
+                無料でダウンロード
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                </svg>
+            </a>
+            <a href="#features" class="btn btn-ghost">特徴を見る</a>
+        </div>
+
+        <div class="device-stage reveal">
+            <div class="device">
+                <div class="screen">
+                    <div class="screen-title">Room</div>
+                    <div class="screen-room">放課後ラウンジ</div>
+                    <div class="voice-grid">
+                        <div class="vc-tile speaking">
+                            <div class="vc-avatar" style="background: linear-gradient(135deg,#EC4899,#F43F5E);">A</div>
+                            <div class="vc-name">あおい</div>
+                            <div class="vc-bars"><span></span><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="vc-tile">
+                            <div class="vc-avatar" style="background: linear-gradient(135deg,#3B82F6,#06B6D4);">K</div>
+                            <div class="vc-name">けんた</div>
+                        </div>
+                        <div class="vc-tile">
+                            <div class="vc-avatar" style="background: linear-gradient(135deg,#10B981,#059669);">M</div>
+                            <div class="vc-name">みお</div>
+                        </div>
+                        <div class="vc-tile speaking">
+                            <div class="vc-avatar" style="background: linear-gradient(135deg,#9333EA,#6366F1);">R</div>
+                            <div class="vc-name">りく</div>
+                            <div class="vc-bars"><span></span><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                    <div class="mic-bar">
+                        <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                            <line x1="12" y1="19" x2="12" y2="22" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features">
+        <div class="section-eyebrow">Features</div>
+        <h2 class="section-title">話したい瞬間を、もっとなめらかに。</h2>
+        <p class="section-lead">録音もログも残さない、リアルタイムだけのコミュニケーション。Temportalは「今この瞬間」のためだけに作られています。</p>
+
+        <div class="features">
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" y1="19" x2="12" y2="22" />
+                    </svg>
+                </div>
+                <h3>低遅延ボイスチャット</h3>
+                <p>WebRTCをベースにしたリアルタイム通話。アカウント不要、ニックネームを入れてすぐ参加できる手軽さ。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="6" y1="11" x2="10" y2="11" />
+                        <line x1="8" y1="9" x2="8" y2="13" />
+                        <line x1="15" y1="12" x2="15.01" y2="12" />
+                        <line x1="18" y1="10" x2="18.01" y2="10" />
+                        <path
+                            d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z" />
+                    </svg>
+                </div>
+                <h3>ゲーム中の即席ボイスチャット</h3>
+                <p>マッチングしたばかりの仲間とも、ルームコードをチャット欄に貼るだけで即合流。フレンド登録もアプリ間連携も要らず、対戦・協力プレイの作戦会議をその場で始められます。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+                <h3>使い捨てのルーム</h3>
+                <p>ルームを抜ければ会話の痕跡は残りません。録音なし・履歴なし。「ワンタイムな空間」だから、本音で話せる。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <line x1="8" y1="21" x2="16" y2="21" />
+                        <line x1="12" y1="17" x2="12" y2="21" />
+                    </svg>
+                </div>
+                <h3>画面共有</h3>
+                <p>資料・ゲーム・思い出の写真。話しながらサッと共有して、視点をそろえる。リモートでも、隣にいる感覚を。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="6" y="2" width="12" height="20" rx="3" ry="3" />
+                        <line x1="9" y1="6" x2="15" y2="6" />
+                        <circle cx="10" cy="13" r="1.6" fill="currentColor" stroke="none" />
+                        <circle cx="14" cy="13" r="1.6" fill="currentColor" stroke="none" />
+                        <line x1="12" y1="18.5" x2="12.01" y2="18.5" />
+                    </svg>
+                </div>
+                <h3>スマホからコントロール</h3>
+                <p>PCで通話・画面共有しながら、手元のスマホでミュート、音量、退室をワンタップ操作。ゲーム中にAlt+Tabで画面を切り替える必要はもうありません。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+                <h3>サイドチャット</h3>
+                <p>声を出しづらい場面でもテキストでサッと一言。ボイスとチャットを自然に切り替えられます。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </div>
+                <h3>グループ機能</h3>
+                <p>友達同士でグループを作って、いつものメンバーで集まれる。仲間との「拠点」をすばやく開設。</p>
+            </div>
+
+            <div class="feature reveal">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <h3>クロスプラットフォーム</h3>
+                <p>iOS / Android / Web / macOS / Windows / Linux に対応。手元のデバイスで、いつでもどこでも。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how">
+        <div class="section-eyebrow">How it works</div>
+        <h2 class="section-title">3ステップで、もう話してる。</h2>
+        <p class="section-lead">ややこしい設定は要りません。アプリを開いて、ルーム名を入れて、共有するだけ。</p>
+
+        <div class="steps">
+            <div class="step reveal">
+                <div class="step-num"></div>
+                <h3>ルームを作る</h3>
+                <p>アプリを開いてルーム名とニックネームを入力。アカウント登録は不要です。</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-num"></div>
+                <h3>友達に共有</h3>
+                <p>ルームコードや招待リンクを送るだけ。受け取った人はワンタップで参加できます。</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-num"></div>
+                <h3>退室で消える</h3>
+                <p>会話を終えてルームを抜ければ、その空間ごと消滅。次の通話はまた新しい部屋で。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="platforms">
+        <div class="platforms-card reveal">
+            <div class="section-eyebrow">Available on</div>
+            <h2 class="section-title">あらゆる端末で、すぐに。</h2>
+            <p class="section-lead">スマホ、PC、ブラウザ。いつもの環境にTemportalを。</p>
+            <div class="platform-list">
+                <div class="platform">📱 iOS</div>
+                <div class="platform">🤖 Android</div>
+                <div class="platform">🌐 Web</div>
+                <div class="platform">🍎 macOS</div>
+                <div class="platform">🪟 Windows</div>
+                <div class="platform">🐧 Linux</div>
+            </div>
+            <div class="platforms-cta">
+                <a href="download.html" class="btn btn-primary">
+                    ダウンロードページへ
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M13 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Temportal. All rights reserved.</p>
+        <p class="footer-links">
+            <a href="#top">トップ</a>·
+            <a href="download.html">ダウンロード</a>·
+            <a href="#features">特徴</a>
+        </p>
+    </footer>
+
+    <script>
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    </script>
+</body>
+
+</html>
